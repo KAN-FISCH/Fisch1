@@ -1057,7 +1057,7 @@ local function AutoQuestShadyLoop()
                         end
                         return
                     else
-                        -- Sudah punya semua item -> Equip semuanya dan bicara ke Todd
+                        -- Sudah punya semua item -> Equip semuanya
                         updateStatusUI("Equip semua item quest...")
                         equipQuestItem("Tarnished Lantern")
                         equipQuestItem("Barnacled Hook")
@@ -1067,16 +1067,20 @@ local function AutoQuestShadyLoop()
                         forceEquipTool("Crow Feather Charm")
                         task.wait(1.5)
 
-                        updateStatusUI("Bicara dengan NPC Todd setelah equip item...")
-                        talkToNPC("Todd", 1)
-                        task.wait(2.0)
-                        return
+                        if not _G.TalkedToToddSecondTime then
+                            updateStatusUI("Bicara dengan NPC Todd setelah equip item...")
+                            talkToNPC("Todd", 1)
+                            _G.TalkedToToddSecondTime = true
+                            task.wait(2.0)
+                            return
+                        end
 
                         -- Solve riddle mercusuar
                         if not bazaarStatus.LighthouseDone then
                             updateStatusUI("Menuju mercusuar untuk memecahkan riddle...")
                             solveLighthouseRiddle()
                             task.wait(2.0)
+                            return
                         end
 
                         -- Talk ke Bazaar Guard
