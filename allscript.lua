@@ -6,7 +6,7 @@ end
 getgenv().__NewFish5_Loaded = true
 
 local BaseURL = "https://raw.githubusercontent.com/KAN-FISCH/Fisch1/refs/heads/main/"
-local FallbackBaseURL = "https://raw.githubusercontent.com/KAN-FISCH/Fisch/refs/heads/main/"
+local FallbackBaseURL = "https://raw.githubusercontent.com/KAN-FISCH/Fisch1/refs/heads/main/"
 
 local function httpGetWithTimeout(url, timeout)
     local result = nil
