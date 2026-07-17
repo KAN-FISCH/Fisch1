@@ -1008,6 +1008,7 @@ local function AutoQuestShadyLoop()
                             updateStatusUI("Memulai quest: Bicara dengan NPC Todd...")
                             talkToNPC("Todd", 1)
                             task.wait(2.0)
+                            return
                         end
 
                         -- Cek siang/malam
@@ -1069,6 +1070,7 @@ local function AutoQuestShadyLoop()
                         updateStatusUI("Bicara dengan NPC Todd setelah equip item...")
                         talkToNPC("Todd", 1)
                         task.wait(2.0)
+                        return
 
                         -- Solve riddle mercusuar
                         if not bazaarStatus.LighthouseDone then
