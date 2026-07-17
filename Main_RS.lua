@@ -1,3 +1,71 @@
+-- ======================================================================
+-- Anti-Lag & Rate Limiting Remote Hook (ShieldTeam Optimizer)
+-- ======================================================================
+local function initRemoteOptimizer()
+    local success, err = pcall(function()
+        local BlockedRemotes = {}
+        
+        local RateLimits = {
+            ["RE/PassiveVfx/Cleanup"] = {max = 5, interval = 1, lastReset = os.clock(), count = 0},
+            ["Ping"]                  = {max = 1, interval = 1, lastReset = os.clock(), count = 0},
+            ["Set"]                   = {max = 2, interval = 1, lastReset = os.clock(), count = 0},
+            ["chat"]                  = {max = 3, interval = 1, lastReset = os.clock(), count = 0},
+        }
+
+        local oldFireServer
+        oldFireServer = hookfunction(Instance.new("RemoteEvent").FireServer, newcclosure(function(self, ...)
+            local name = self.Name
+            if BlockedRemotes[name] then
+                return
+            end
+            
+            local rl = RateLimits[name]
+            if rl then
+                local now = os.clock()
+                if now - rl.lastReset >= rl.interval then
+                    rl.lastReset = now
+                    rl.count = 0
+                end
+                if rl.count >= rl.max then
+                    return
+                end
+                rl.count = rl.count + 1
+            end
+            
+            return oldFireServer(self, ...)
+        end))
+
+        local oldInvokeServer
+        oldInvokeServer = hookfunction(Instance.new("RemoteFunction").InvokeServer, newcclosure(function(self, ...)
+            local name = self.Name
+            if BlockedRemotes[name] then
+                return
+            end
+            
+            local rl = RateLimits[name]
+            if rl then
+                local now = os.clock()
+                if now - rl.lastReset >= rl.interval then
+                    rl.lastReset = now
+                    rl.count = 0
+                end
+                if rl.count >= rl.max then
+                    return
+                end
+                rl.count = rl.count + 1
+            end
+            
+            return oldInvokeServer(self, ...)
+        end))
+        
+        print("[ShieldTeam] Remote Optimizer Loaded Successfully!")
+    end)
+    if not success then
+        warn("[ShieldTeam] Failed to initialize Remote Optimizer: " .. tostring(err))
+    end
+end
+task.spawn(initRemoteOptimizer)
+
 local BaseURL = "https://raw.githubusercontent.com/KAN-FISCH/Fisch1/refs/heads/main/"
 local FallbackBaseURL = "https://raw.githubusercontent.com/KAN-FISCH/Fisch1/refs/heads/main/"
 
